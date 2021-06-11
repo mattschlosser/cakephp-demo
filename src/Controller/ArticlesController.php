@@ -3,12 +3,23 @@
 
 namespace App\Controller;
 
+use Cake\Event\EventInterface;
+use Cake\Http\Response;
+
 class ArticlesController extends AppController
 {
+
     public function initialize(): void
     {
         parent::initialize();
         $this->loadComponent('RequestHandler');
+    }
+
+    public function beforeFilter(EventInterface $event)
+    {
+        if ($this->request->getMethod() == "GET") {
+            header("Access-Control-Allow-Origin: *");   
+        }
     }
 
     public function index()
@@ -23,7 +34,7 @@ class ArticlesController extends AppController
     {
         $article = $this->Articles->findBySlug($slug)->firstOrFail();
         $this->set(compact('article'));
-        $this->viewBuilder()->setOption('serialize', 'article');
+        $this->viewBuilder()->setOption('serialize', ['article']);
     }
 
     public function add()
@@ -43,6 +54,7 @@ class ArticlesController extends AppController
             $this->Flash->error(__('Unable to add your article.'));
         }
         $this->set('article', $article);
+        $this->viewBuilder()->setOption('serialize', ['article']);
     }
 
     public function edit($slug)
@@ -61,6 +73,7 @@ class ArticlesController extends AppController
         }
 
         $this->set('article', $article);
+        $this->viewBuilder()->setOption('serialize', ['article']);
     }
 
     public function delete($slug)
@@ -69,9 +82,10 @@ class ArticlesController extends AppController
 
         $article = $this->Articles->findBySlug($slug)->firstOrFail();
         if ($this->Articles->delete($article)) {
+            $message = "Error";
             $this->Flash->success(__('The {0} article has been deleted.', $article->title));
             return $this->redirect(['action' => 'index']);
-        }
+        } 
     }
 
 

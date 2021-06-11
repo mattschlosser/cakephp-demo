@@ -6,6 +6,6 @@
 <p><?= $this->Html->link('Edit', ['action' => 'edit', $article->slug]) ?></p>
 <Style>
 .prewrap {
-    white-space: pre-wrap;
+    white-space: pre-wrap;  
 }
 </Style>
